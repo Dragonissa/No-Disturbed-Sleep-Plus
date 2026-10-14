@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	<AssemblyName>NoDisturbedSleepPlus</AssemblyName>
+    <TargetFramework>net4.7.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="0Harmony">
+      <HintPath>D:\SteamLibrary\steamapps\workshop\content\294100\2009463077\1.6\Assemblies\0Harmony.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>D:\SteamLibrary\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>D:\SteamLibrary\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+	<!-- Path to copy the final DLL to -->
+	<PropertyGroup>
+		<RimWorldModsAssemblies>D:\SteamLibrary\steamapps\common\RimWorld\Mods\No Disturbed Sleep Plus\Assemblies</RimWorldModsAssemblies>
+	</PropertyGroup>
+
+	<!-- Copy the built DLL to the RimWorld Mods Assemblies folder after build -->
+	<Target Name="CopyToRimWorldAssemblies" AfterTargets="Build">
+		<Message Text="Copying $(TargetPath) to $(RimWorldModsAssemblies)" Importance="High" />
+		<MakeDir Directories="$(RimWorldModsAssemblies)" Condition="!Exists('$(RimWorldModsAssemblies)')" />
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(RimWorldModsAssemblies)" SkipUnchangedFiles="true" />
+	</Target>
+
+</Project>

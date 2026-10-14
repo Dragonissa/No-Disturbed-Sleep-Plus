@@ -1,0 +1,7 @@
+.git
+.vs
+Assemblies/Release
+Source/obj
+Source/bin
+Source/NoDisturbedSleepPlus/obj
+Source/NoDisturbedSleepPlus/bin
