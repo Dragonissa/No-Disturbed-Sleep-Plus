@@ -14,11 +14,16 @@ namespace NoDisturbedSleepPlus
         private static AccessTools.FieldRef<Pawn, int> lastSleepDisturbedTickRef = AccessTools.FieldRefAccess<Pawn, int>("lastSleepDisturbedTick");
         private static bool Prefix(Pawn __instance, Pawn source)
         {
+            /* In vanilla, the code tries to prevent bonded animals from disturbing sleeping pawns, but the check misses the fact that
+             * a relation is bi-derectional, meaning that every pawn with a bond will never disturb anyone.
+             * 
+             * It is reported to the devs and hopefully fixed someday.
+             */
+
             Pawn_NeedsTracker needs = __instance.needs;
             bool flag = ((needs != null) ? needs.mood : null) == null || RestUtility.Awake(__instance) || __instance.Faction != Faction.OfPlayer || Find.TickManager.TicksGame < lastSleepDisturbedTickRef.Invoke(__instance) + 300 || __instance.Deathresting;
             var bed = __instance.CurrentBed();
             var room = __instance.GetRoom();
-
 
             if (flag)
             {
@@ -36,16 +41,6 @@ namespace NoDisturbedSleepPlus
                     Log.Message(string.Format("[NoDisturbedSleep] Disturbed sleep is disabled in settings. Skipping disturbance for {0} due to source {1}.", __instance.Name, source.Name));
                 }
                 return false;
-            }
-            //Fixes original vanilla code
-            if (source.relations != null)
-            {
-                if (source.relations.DirectRelations.Any((DirectPawnRelation dr) => dr.def == PawnRelationDefOf.Bond))
-                {
-                    lastSleepDisturbedTickRef.Invoke(__instance) = Find.TickManager.TicksGame;
-                    __instance.needs.mood.thoughts.memories.TryGainMemory(ThoughtDefOf.SleepDisturbed, null, null);
-                    return false;
-                }
             }
             if (Settings.disableDisturbedSleepForHospitals)
             {
@@ -86,6 +81,7 @@ namespace NoDisturbedSleepPlus
                 }
                 return true;
             }
+
             return true;   
         }
 

@@ -7,6 +7,7 @@ namespace NoDisturbedSleepPlus
         public bool disableDisturbedSleep = false;
         public bool disableDisturbedSleepForHospitals = false;
         public bool disableDisturbedSleepForPolyLovers = false;
+
         public bool debugMode = false;
         public override void ExposeData()
         {
