@@ -36,30 +36,38 @@ namespace NoDisturbedSleepPlus
 
             if (Settings.disableDisturbedSleep)
             {
-                if (Settings.debugMode)
+                if (Prefs.DevMode & Settings.debugMode)
                 {
-                    Log.Message(string.Format("[NoDisturbedSleep] Disturbed sleep is disabled in settings. Skipping disturbance for {0} due to source {1}.", __instance.Name, source.Name));
+                    Log.Message(string.Format("[NoDisturbedSleep(Disabled)] Disturbed sleep is disabled in settings. Skipping disturbance for {0}", __instance.Name));
                 }
                 return false;
             }
             if (Settings.disableDisturbedSleepForHospitals)
             {
-                if (IsPatient(__instance))
+                if (bed.GetRoom().Role == RoomRoleDefOf.Hospital && IsPatient(__instance))
                 {
                     if (IsDoctorOrTending(source) || IsCarryingInjuredPawn(source))
                     {
-                        if (Settings.debugMode)
+                        if (Prefs.DevMode & Settings.debugMode)
                         {
-                            Log.Message(string.Format("[NoDisturbedSleep] Disturbed sleep is disabled for hospitals in settings. Skipping disturbance for {0} due to source {1}.", __instance.Name, source.Name));
+                            Log.Message(string.Format("[NoDisturbedSleep(Hospital)] Disturbed sleep is disabled for hospitals in settings. Skipping disturbance for {0} due to source {1}.", __instance.Name, source.Name));
                         }
                         return false;
                     }
                 }
-                return true;
 
             }
             if (Settings.disableDisturbedSleepForPolyLovers)
             {
+                if (!bed.Medical && bed.TotalSleepingSlots == 1)
+                {
+                    if (Prefs.DevMode & Settings.debugMode)
+                    {
+                        Log.Message($"[NoDisturbedSleep(Poly)] Not skipping disturbance for {__instance.Name} from {source.Name} due to single sleeping slot.");
+                    }
+                    return true;
+                }
+
                 bool ignoreDisturbance =
                     LovePartnerRelationUtility.LovePartnerRelationExists(__instance, source)
                     || bed.CurOccupants
@@ -73,13 +81,12 @@ namespace NoDisturbedSleepPlus
 
                 if (ignoreDisturbance)
                 {
-                    if (Settings.debugMode)
+                    if (Prefs.DevMode & Settings.debugMode)
                     {
-                        Log.Message($"[NoDisturbedSleep] Skipping disturbance for {__instance.Name} from {source.Name} due to romantic connection.");
+                        Log.Message($"[NoDisturbedSleep(Poly)] Skipping disturbance for {__instance.Name} from {source.Name} due to romantic connection.");
                     }
                     return false;
                 }
-                return true;
             }
 
             return true;   
