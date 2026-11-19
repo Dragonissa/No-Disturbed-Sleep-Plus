@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	<AssemblyName>NoDisturbedSleepPlus</AssemblyName>
+    <TargetFramework>net4.7.2</TargetFramework>
+  </PropertyGroup>
+
+	<Target Name="CopyToRimWorldAssemblies" AfterTargets="Build">
+		<Exec Command="powershell -ExecutionPolicy Bypass -NoProfile -File &quot;$(ProjectDir)Deploy-RimWorldMod.ps1&quot; -SourceDll &quot;$(TargetPath)&quot; -ModName &quot;$(AssemblyName)&quot;" />
+	</Target>
+
+	<ItemGroup>
+	  <Reference Include="0Harmony">
+	    <HintPath>E:\SteamLibrary\steamapps\workshop\content\294100\2009463077\1.6\Assemblies\0Harmony.dll</HintPath>
+	  </Reference>
+	  <Reference Include="Assembly-CSharp">
+	    <HintPath>E:\SteamLibrary\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+	  </Reference>
+	  <Reference Include="UnityEngine.CoreModule">
+	    <HintPath>E:\SteamLibrary\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+	  </Reference>
+	</ItemGroup>
+
+</Project>
